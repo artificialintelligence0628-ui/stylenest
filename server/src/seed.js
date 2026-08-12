@@ -58,12 +58,13 @@ async function main() {
     console.log(created ? `Created: ${product.name}` : `Already exists: ${product.name}`)
   }
 
-  const adminEmail = 'admin@stylenest.com'
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@stylenest.com'
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
   const existingAdmin = await User.findOne({ where: { email: adminEmail } })
   if (!existingAdmin) {
-    const hashed = await bcrypt.hash('admin123', 10)
+    const hashed = await bcrypt.hash(adminPassword, 10)
     await User.create({ name: 'Store Admin', email: adminEmail, password: hashed, role: 'ADMIN' })
-    console.log(`Seeded admin user: ${adminEmail} / admin123 (change this password!)`)
+    console.log(`Seeded admin user: ${adminEmail}`)
   } else {
     console.log('Admin user already exists.')
   }
